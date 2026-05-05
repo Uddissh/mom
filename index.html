@@ -1,1 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anamika Verma | Astrologist · Vastu Expert · Numerologist</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&display=swap');
 
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #F0D98C;
+      --amber: #E8A020;
+      --bg-deep: #0A0806;
+      --bg-mid: #120E09;
+      --ivory: #FDF6E3;
+      --ivory-muted: #C8B89A;
+      --glass-bg: rgba(201, 168, 76, 0.08);
+      --glass-border: rgba(201, 168, 76, 0.30);
+      --glow: 0 0 30px rgba(201, 168, 76, 0.25);
+      --error: #E05050;
+      --maxw: 1280px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Crimson Pro', serif;
+      background: var(--bg-deep);
+      color: var(--ivory);
+      overflow-x: hidden;
+      cursor: none;
+      line-height: 1.65;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    #starfield {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      transform: translateY(0);
+    }
+
+    .mandala-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+      opacity: 0.08;
+      transform: translateY(0);
+      background-image: radial-gradient(circle at 25% 20%, rgba(201,168,76,0.18), transparent 40%), radial-gradient(circle at 72% 76%, rgba(232,160,32,0.2), transparent 35%);
+    }
+
+    #cursor {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      position: fixed;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, var(--gold-light) 0%, var(--gold) 55%, rgba(201,168,76,0) 100%);
+      box-shadow: 0 0 18px rgba(201,168,76,0.7), 0 0 32px rgba(232,160,32,0.55);
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
+    }
+
+    #cursor.hover { width: 26px; height: 26px; }
+
+    .container { width: min(92%, var(--maxw)); margin: auto; position: relative; z-index: 2; }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .section-title {
+      font-family: 'Cinzel Decorative', serif;
+      color: var(--gold-light);
+      text-align: center;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      letter-spacing: 0.08em;
+      margin-bottom: 3rem;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .heading-wrap { position: relative; text-align: center; }
+    .mandala-head {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.12;
+      animation: spin 30s linear infinite;
+      pointer-events: none;
+    }
+
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glow);
+      border-radius: 16px;
+    }
+
+    header { position: sticky; top: 0; z-index: 1000; }
+    .navbar {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 1rem min(3vw,2rem);
+      transition: background 0.4s ease, border 0.4s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .navbar.scrolled { background: rgba(10,8,6,.92); backdrop-filter: blur(10px); border-bottom-color: rgba(201,168,76,.45); }
+    .brand { justify-self: start; font-family: 'Cinzel Decorative', serif; color: var(--gold); font-size: 1.4rem; }
+    .nav-links { display: flex; gap: 1.6rem; font-family: 'Cinzel Decorative', serif; }
+    .nav-links a { position: relative; color: var(--ivory-muted); }
+    .nav-links a::after { content: ''; position: absolute; left: 0; bottom: -6px; width: 0; height: 2px; background: var(--gold); transition: width .3s; }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold-light); }
+    .phone-link { justify-self: end; color: var(--gold-light); text-shadow: 0 0 12px rgba(201,168,76,.7); }
+
+    .hamburger { display: none; flex-direction: column; gap: 4px; background: transparent; border: none; }
+    .hamburger span { width: 26px; height: 2px; background: var(--gold); }
+    .mobile-menu {
+      position: fixed; inset: 0; background: rgba(5,4,3,.98); display: none; place-items: center; z-index: 1200;
+    }
+    .mobile-menu.open { display: grid; }
+    .mobile-links { display: grid; gap: 1.5rem; text-align: center; font-family: 'Cinzel Decorative', serif; font-size: 2rem; color: var(--gold-light); }
+
+    .hero { min-height: 100vh; display: flex; align-items: center; position: relative; padding: 5rem 0 2rem; overflow: hidden; }
+    .hero-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 2rem; align-items: center; }
+    .name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem,7vw,7rem);
+      line-height: 0.95;
+      background: linear-gradient(90deg, #C9A84C, #F0D98C, #E8A020, #C9A84C);
+      background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shimmer 4s ease infinite;
+      margin-bottom: 1rem;
+    }
+    .subtitle { font-family: 'Cinzel Decorative', serif; letter-spacing: .12em; color: var(--gold-light); margin-bottom: 1.2rem; }
+    .tagline { font-style: italic; font-size: 1.35rem; color: var(--ivory-muted); margin-bottom: 2rem; }
+    .cta-wrap { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+    .cta-btn {
+      border: 1px solid var(--gold);
+      padding: .9rem 1.7rem;
+      border-radius: 999px;
+      font-family: 'Cinzel Decorative', serif;
+      color: var(--gold-light);
+      background: linear-gradient(var(--bg-deep),var(--bg-deep)) padding-box, linear-gradient(90deg,var(--gold),var(--amber),var(--gold-light)) border-box;
+      animation: pulse 2s infinite;
+    }
+    .secondary-link { color: var(--gold); text-decoration: underline; text-underline-offset: 6px; }
+
+    .zodiac-scene { perspective: 900px; display: grid; place-items: center; min-height: 480px; pointer-events: none; }
+    .wheel { position: relative; width: 340px; height: 340px; transform-style: preserve-3d; animation: spin 40s linear infinite; }
+    .glyph { position: absolute; top: 50%; left: 50%; transform-style: preserve-3d; color: var(--gold-light); font-size: 2rem; text-shadow: 0 0 10px rgba(201,168,76,.65); }
+    .inner-mandala { width: 220px; height: 220px; border: 1px solid rgba(201,168,76,.4); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); animation: spinReverse 80s linear infinite; }
+
+    .particles { position: absolute; inset: 0; pointer-events: none; }
+    .particles span { position: absolute; bottom: -20px; width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle, var(--gold-light), transparent 70%); animation: floatUp 10s linear infinite; opacity: .6; }
+
+    section { padding: 6rem 0; position: relative; }
+    .about { background: var(--bg-mid); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 2rem; align-items: center; }
+
+    .portrait { aspect-ratio: 1; width: min(420px,100%); margin: auto; padding: 1rem; border-radius: 50%; }
+    .bio p { margin-bottom: 1rem; color: var(--ivory-muted); }
+
+    .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-top: 2rem; }
+    .stat { text-align: center; padding: 1rem; }
+    .stat h3 { font-size: 2rem; color: var(--gold-light); font-family: 'Cinzel Decorative', serif; }
+
+    .services-grid { display: grid; gap: 1rem; grid-template-columns: repeat(6,1fr); }
+    .service-card { padding: 1.4rem; transition: .3s ease; }
+    .service-card:nth-child(1), .service-card:nth-child(2) { grid-column: span 3; }
+    .service-card:nth-child(n+3) { grid-column: span 2; }
+    .service-card h3 { font-family: 'Cinzel Decorative', serif; color: var(--gold-light); margin: .8rem 0; }
+    .service-card p { color: var(--ivory-muted); }
+    .learn { color: var(--gold); text-decoration: underline; text-underline-offset: 5px; display: inline-block; margin-top: .8rem; }
+    .service-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(201,168,76,.35); }
+    .service-card:hover svg { transform: rotate(12deg); }
+    .service-card svg { transition: transform .3s ease; }
+
+    .testi-track { display: flex; gap: 1rem; overflow: hidden; }
+    .testi-inner { display: flex; gap: 1rem; animation: marquee 34s linear infinite; }
+    .testi-track:hover .testi-inner { animation-play-state: paused; }
+    .quote { min-width: 320px; max-width: 360px; padding: 1.2rem; }
+
+    #servicesCanvas { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+    .services .container { position: relative; z-index: 2; }
+
+    .consult {
+      background: radial-gradient(circle at center, #120E09 0%, #0A0806 70%);
+    }
+    .form-shell { padding: 2rem; position: relative; }
+    .orn-bar { width: 100%; height: 40px; }
+    .consult-form { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; margin-top: 1.3rem; }
+    .field { position: relative; }
+    .field.full { grid-column: span 2; }
+    .field input, .field textarea {
+      width: 100%;
+      background: rgba(10,8,6,.8);
+      border: 1px solid rgba(201,168,76,.35);
+      color: var(--ivory);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-family: 'Crimson Pro', serif;
+      font-size: 1.05rem;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .phone-wrap input { padding-left: 58px; }
+    .prefix { position: absolute; left: 10px; top: 12px; background: rgba(201,168,76,.2); color: var(--gold-light); padding: .1rem .5rem; border-radius: 6px; }
+    .field label {
+      position: absolute; left: 16px; top: 14px; color: var(--ivory-muted); pointer-events: none; transition: .25s ease;
+    }
+    .phone-wrap label { left: 60px; }
+    .field input:focus, .field textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,.2); outline: none; }
+    .field input:focus + label, .field textarea:focus + label,
+    .field input:not(:placeholder-shown) + label, .field textarea:not(:placeholder-shown) + label { transform: translateY(-26px) scale(.8); color: var(--gold); }
+
+    .dropzone { border: 2px dashed var(--gold); border-radius: 12px; padding: 48px; text-align: center; cursor: pointer; transition: .3s ease; }
+    .dropzone.drag { box-shadow: 0 0 25px rgba(201,168,76,.4); background: rgba(201,168,76,.08); }
+    .dropzone small { color: var(--ivory-muted); display: block; }
+    .hidden-file { display: none; }
+
+    .error-msg { color: var(--error); font-size: .9rem; margin-top: .35rem; min-height: 1rem; }
+    .invalid input, .invalid textarea { border-color: var(--error); box-shadow: 0 0 0 3px rgba(224,80,80,.2); animation: shake .35s; }
+
+    .submit-btn {
+      grid-column: span 2;
+      height: 56px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.1rem;
+      color: #0A0806;
+      background: linear-gradient(90deg, #C9A84C, #E8A020, #C9A84C);
+      background-size: 200%;
+      animation: shimmer 3s ease infinite;
+    }
+    .submit-btn:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(201,168,76,.5); }
+
+    .spinner { width: 18px; height: 18px; border: 3px solid rgba(10,8,6,.2); border-top-color: #0A0806; border-radius: 50%; display: inline-block; vertical-align: middle; animation: spin .8s linear infinite; margin-right: 8px; }
+
+    .contact-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+    .contact-card { text-align: center; padding: 1.6rem; transition: .3s ease; }
+    .contact-card:hover { transform: translateY(-8px); box-shadow: 0 0 40px rgba(201,168,76,.35); }
+    .contact-card strong { display: block; margin: .7rem 0 .3rem; font-family: 'Cinzel Decorative', serif; color: var(--gold-light); }
+    .contact-card a:hover { text-decoration: underline; text-underline-offset: 4px; }
+    .loc { text-align: center; margin-top: 1.4rem; color: var(--ivory-muted); font-style: italic; }
+
+    footer { background: #060504; border-top: 1px solid rgba(201,168,76,.35); }
+    .foot-top { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; padding: 3rem 0; }
+    .foot-mono { font-family: 'Cinzel Decorative', serif; color: var(--gold); font-size: 1.4rem; }
+    .foot-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .socials { display: flex; justify-content: flex-end; gap: .7rem; }
+    .icon-btn { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--gold); display: grid; place-items: center; }
+    .foot-bar { background: #0f0b08; color: var(--ivory-muted); text-align: center; padding: .9rem; }
+
+    .divider { display: block; width: 100%; height: 62px; margin-top: -1px; }
+
+    .modal {
+      position: fixed; inset: 0; background: rgba(0,0,0,.8); display: none; place-items: center; z-index: 2000;
+    }
+    .modal.open { display: grid; }
+    .modal-card { max-width: 520px; padding: 2rem; text-align: center; }
+
+    @keyframes shimmer { 0%{background-position:0%} 50%{background-position:100%} 100%{background-position:0%} }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 14px rgba(201,168,76,.3)} 50%{box-shadow:0 0 28px rgba(201,168,76,.55)} }
+    @keyframes spin { to{ transform: rotate(360deg);} }
+    @keyframes spinReverse { to{ transform: translate(-50%, -50%) rotate(-360deg);} }
+    @keyframes floatUp { 0%{ transform: translateY(0) translateX(0); opacity:0;} 20%{opacity:.9;} 100%{ transform: translateY(-110vh) translateX(50px); opacity:0;} }
+    @keyframes marquee { to { transform: translateX(-50%);} }
+    @keyframes shake { 20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}100%{transform:translateX(0)} }
+    @keyframes dash { to { stroke-dashoffset: 0; } }
+
+    @media (max-width: 768px) {
+      .nav-links, .phone-link { display: none; }
+      .hamburger { display: flex; justify-self: end; }
+      .navbar { grid-template-columns: 1fr auto; }
+      .hero-grid, .about-grid, .contact-cards, .foot-top { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .service-card { grid-column: auto !important; }
+      .consult-form { grid-template-columns: 1fr; }
+      .field.full, .submit-btn { grid-column: span 1; }
+      .socials { justify-content: flex-start; }
+    }
+
+    @media (max-width: 480px) {
+      .name { font-size: 3rem; }
+      .section-title { font-size: 2rem; }
+      .tagline { font-size: 1.05rem; }
+      .dropzone { padding: 30px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+  <div class="mandala-layer" aria-hidden="true"></div>
+  <div id="cursor" aria-hidden="true"></div>
+
+  <header>
+    <nav class="navbar" id="navbar">
+      <a href="#home" class="brand">AV ✦</a>
+      <div class="nav-links">
+        <a href="#home" class="active">Home</a><a href="#about">About</a><a href="#services">Services</a><a href="#consult">Consult</a><a href="#contact">Contact</a>
+      </div>
+      <a href="tel:+918009592703" class="phone-link">+91 8009592703</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </nav>
+  </header>
+  <div class="mobile-menu" id="mobileMenu"><div class="mobile-links"><a href="#home">Home</a><a href="#about">About</a><a href="#services">Services</a><a href="#consult">Consult</a><a href="#contact">Contact</a></div></div>
+
+  <main id="home">
+    <section class="hero">
+      <div class="particles" id="particles"></div>
+      <div class="container hero-grid">
+        <div class="reveal">
+          <h1 class="name">Anamika Verma</h1>
+          <p class="subtitle">Vedic Astrologist · Vastu Expert · Numerologist</p>
+          <p class="tagline">Illuminate Your Destiny Through the Stars</p>
+          <div class="cta-wrap">
+            <a class="cta-btn" href="#consult">✦ Book a Consultation ✦</a>
+            <a class="secondary-link" href="#services">Explore Services ↓</a>
+          </div>
+        </div>
+        <div class="zodiac-scene reveal">
+          <div class="wheel" id="wheel"></div>
+          <div class="inner-mandala"></div>
+        </div>
+      </div>
+    </section>
+
+    <svg class="divider" viewBox="0 0 1200 120" fill="none"><path d="M0 60C120 20 240 20 360 60C480 100 600 100 720 60C840 20 960 20 1080 60C1140 80 1170 90 1200 60" stroke="#C9A84C" stroke-opacity=".5"/></svg>
+
+    <section class="about" id="about">
+      <div class="container">
+        <div class="about-grid">
+          <div class="portrait glass reveal">
+            <svg viewBox="0 0 400 400" width="100%" height="100%"><circle cx="200" cy="200" r="185" fill="none" stroke="#C9A84C" stroke-width="2"/><circle cx="200" cy="200" r="160" fill="none" stroke="#F0D98C" stroke-dasharray="4 10"/><circle cx="200" cy="200" r="120" fill="none" stroke="#C9A84C"/><text x="50%" y="53%" fill="#F0D98C" text-anchor="middle" font-size="72" font-family="Cinzel Decorative">AV</text></svg>
+          </div>
+          <div class="bio reveal">
+            <div class="heading-wrap"><svg class="mandala-head" viewBox="0 0 200 200"><circle cx="100" cy="100" r="92" stroke="#C9A84C" fill="none"/><circle cx="100" cy="100" r="65" stroke="#F0D98C" fill="none"/></svg><h2 class="section-title" style="margin-bottom:1rem;">About Anamika Ji</h2></div>
+            <p>For over two decades, Anamika Verma has guided thousands of souls through life’s turning points with compassionate Vedic insight and practical spiritual direction. Her consultations are known for their warmth, precision, and transformative clarity.</p>
+            <p>Deeply rooted in classical Indian traditions, she studies planetary patterns, karmic cycles, and sacred timings to reveal pathways that align your decisions with cosmic harmony and higher purpose.</p>
+            <p>Her rare strength lies in integrating Vedic Astrology with Vastu Shastra, Namology, and Numerology—offering a holistic map for home, career, relationships, and spiritual growth.</p>
+            <p>Every session is tailored with personal care, remedies, and disciplined guidance so that each seeker feels seen, empowered, and supported on a journey toward peace, prosperity, and inner radiance.</p>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat glass reveal"><h3 data-target="1000">0</h3><p>Clients Guided</p></div>
+          <div class="stat glass reveal"><h3 data-target="20">0</h3><p>Years of Experience</p></div>
+          <div class="stat glass reveal"><h3 data-target="5">0</h3><p>Sacred Sciences</p></div>
+        </div>
+      </div>
+    </section>
+
+    <svg class="divider" viewBox="0 0 1200 120" fill="none"><path d="M100 60H1100" stroke="#C9A84C"/><path d="M350 60l40-20 40 20-40 20-40-20zm370 0l40-20 40 20-40 20-40-20z" stroke="#F0D98C" fill="none"/></svg>
+
+    <section class="services" id="services">
+      <canvas id="servicesCanvas"></canvas>
+      <div class="container">
+        <div class="heading-wrap reveal"><svg class="mandala-head" viewBox="0 0 200 200"><circle cx="100" cy="100" r="90" stroke="#C9A84C" fill="none"/><path d="M100 10v180M10 100h180" stroke="#F0D98C"/></svg><h2 class="section-title">Sacred Sciences</h2></div>
+        <div class="services-grid">
+          <article class="service-card glass reveal"><svg width="52" height="52" viewBox="0 0 64 64"><path d="M8 30l24-18 24 18v22H8z" fill="none" stroke="#C9A84C"/><path d="M32 52V34" stroke="#F0D98C"/><circle cx="32" cy="24" r="8" stroke="#E8A020" fill="none"/></svg><h3>Vastu Shastra</h3><p>Align your living and working spaces with elemental balance to unlock harmony, stability, and prosperity.</p><a class="learn" href="#" aria-label="Learn more about Vastu Shastra">Learn More →</a></article>
+          <article class="service-card glass reveal"><svg width="52" height="52" viewBox="0 0 64 64"><circle cx="32" cy="32" r="20" stroke="#C9A84C" fill="none"/><circle cx="32" cy="32" r="4" fill="#F0D98C"/><path d="M32 12v40M12 32h40" stroke="#E8A020"/></svg><h3>Vedic Astrology</h3><p>Decode planetary influences and dasha periods for confident decisions in career, marriage, timing, and destiny.</p><a class="learn" href="#" aria-label="Learn more about Vedic Astrology">Learn More →</a></article>
+          <article class="service-card glass reveal"><svg width="52" height="52" viewBox="0 0 64 64"><path d="M10 42c8-14 18-14 26 0" stroke="#C9A84C" fill="none"/><circle cx="40" cy="25" r="8" stroke="#F0D98C" fill="none"/><path d="M40 17v16M32 25h16" stroke="#E8A020"/></svg><h3>Namology</h3><p>Refine name vibrations through sacred phonetic science to enhance identity resonance and life flow.</p><a class="learn" href="#" aria-label="Learn more about Namology">Learn More →</a></article>
+          <article class="service-card glass reveal"><svg width="52" height="52" viewBox="0 0 64 64"><path d="M10 50h44" stroke="#C9A84C"/><text x="14" y="38" fill="#F0D98C" font-size="22">8</text><text x="30" y="38" fill="#E8A020" font-size="22">3</text></svg><h3>Numerology</h3><p>Understand core numbers and cycles that shape opportunities, personality, and life patterns.</p><a class="learn" href="#" aria-label="Learn more about Numerology">Learn More →</a></article>
+          <article class="service-card glass reveal"><svg width="52" height="52" viewBox="0 0 64 64"><path d="M32 12l8 14 16 2-12 10 4 14-16-8-16 8 4-14-12-10 16-2z" stroke="#C9A84C" fill="none"/><path d="M32 18v24" stroke="#F0D98C"/></svg><h3>Spiritual Remedies</h3><p>Receive personalized mantras, rituals, and devotional remedies to remove energetic obstacles and invite grace.</p><a class="learn" href="#" aria-label="Learn more about Spiritual Remedies">Learn More →</a></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials" id="testimonials">
+      <div class="container">
+        <div class="heading-wrap reveal"><svg class="mandala-head" viewBox="0 0 200 200"><circle cx="100" cy="100" r="92" stroke="#C9A84C" fill="none"/></svg><h2 class="section-title">Voices of the Stars</h2></div>
+        <div class="testi-track reveal"><div class="testi-inner">
+          <article class="quote glass"><div>★★★★★</div><p><em>“Anamika ji’s guidance brought peace to our home and clarity to my career decisions. Her remedies were simple yet deeply effective.”</em></p><strong>Ritika Sharma · Delhi</strong></article>
+          <article class="quote glass"><div>★★★★★</div><p><em>“I felt truly heard. The reading was accurate, compassionate, and practical. Within weeks, long-standing confusion started resolving.”</em></p><strong>Neeraj Kulkarni · Mumbai</strong></article>
+          <article class="quote glass"><div>★★★★★</div><p><em>“Her Vastu and numerology advice transformed both my office energy and confidence. Results were visible quickly and sustainably.”</em></p><strong>Sonal Patil · Pune</strong></article>
+          <article class="quote glass"><div>★★★★★</div><p><em>“A divine experience. Every prediction and remedy aligned beautifully with my situation. I recommend Anamika ji wholeheartedly.”</em></p><strong>Aditya Srivastava · Lucknow</strong></article>
+        </div></div>
+      </div>
+    </section>
+
+    <section class="consult" id="consult">
+      <div class="container reveal">
+        <div class="form-shell glass">
+          <svg class="orn-bar" viewBox="0 0 1200 60"><path d="M20 30h1160" stroke="#C9A84C"/><path d="M570 30l30-20 30 20-30 20z" stroke="#F0D98C" fill="none"/></svg>
+          <h2 class="section-title" style="margin:0;">Request a Consultation</h2>
+          <p style="text-align:center;color:var(--ivory-muted);margin-top:.6rem;">Fill in your details — Anamika ji will reach out to guide you within 24 hours.</p>
+          <form id="consultForm" class="consult-form" action="https://formsubmit.co/el/kasuzo" method="POST" novalidate>
+            <input type="hidden" name="_subject" value="New Consultation Request — Anamika Verma Website" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="_captcha" value="false" />
+            <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+            <div class="field"><input id="name" name="full_name" placeholder=" " required /><label for="name">Full Name *</label><div class="error-msg"></div></div>
+            <div class="field phone-wrap"><span class="prefix">+91</span><input id="phone" name="phone" type="tel" placeholder=" " inputmode="numeric" required /><label for="phone">Contact Number *</label><div class="error-msg"></div></div>
+            <div class="field"><input id="email" name="email" type="email" placeholder=" " required /><label for="email">Email Address *</label><div class="error-msg"></div></div>
+            <div class="field"><input id="dob" name="date_of_birth" type="date" placeholder=" " required /><label for="dob">Date of Birth *</label><div class="error-msg"></div></div>
+            <div class="field full"><textarea id="address" name="address" rows="3" placeholder=" " required></textarea><label for="address">Postal Address *</label><div class="error-msg"></div></div>
+            <div class="field"><input id="profession" name="profession" placeholder=" " required /><label for="profession">Profession *</label><div class="error-msg"></div></div>
+            <div class="field full"><textarea id="guidance" name="guidance_area" rows="5" placeholder="Describe the challenges or questions you seek cosmic guidance on — career, relationships, health, finances, property, or spiritual growth..." required></textarea><label for="guidance">Area of Guidance *</label><div class="error-msg"></div></div>
+            <div class="field full">
+              <div class="dropzone" id="dropzone" aria-label="Upload House or Office Map">
+                <svg width="48" height="48" viewBox="0 0 64 64"><path d="M32 12v28M20 24l12-12 12 12" stroke="#C9A84C" fill="none"/><rect x="10" y="40" width="44" height="12" rx="4" stroke="#F0D98C" fill="none"/></svg>
+                <h4>Upload House / Office Map (Optional)</h4>
+                <p>Drag & drop your floor plan here, or click to browse</p>
+                <small>Accepts PDF, JPG, PNG — Max 10MB</small>
+                <div id="fileInfo"></div>
+              </div>
+              <input class="hidden-file" id="fileInput" name="floor_plan" type="file" accept=".pdf,.jpg,.jpeg,.png" />
+            </div>
+            <button class="submit-btn" id="submitBtn" type="submit">✦ Send My Request ✦</button>
+          </form>
+          <svg class="orn-bar" viewBox="0 0 1200 60"><path d="M20 30h1160" stroke="#C9A84C"/></svg>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container">
+        <div class="heading-wrap reveal"><svg class="mandala-head" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" stroke="#C9A84C" fill="none"/></svg><h2 class="section-title">Connect With the Stars</h2></div>
+        <div class="contact-cards">
+          <article class="contact-card glass reveal"><svg width="42" height="42" viewBox="0 0 64 64"><path d="M18 14h10l6 12-6 6c4 8 10 14 18 18l6-6 12 6v10c0 2-2 4-4 4C33 62 2 31 2 6c0-2 2-4 4-4h12z" fill="none" stroke="#C9A84C"/></svg><strong>Call / WhatsApp</strong><a href="tel:+918009592703">+91 8009592703</a><br/><a href="https://wa.me/918009592703" target="_blank" rel="noopener">WhatsApp</a></article>
+          <article class="contact-card glass reveal"><svg width="42" height="42" viewBox="0 0 64 64"><rect x="8" y="14" width="48" height="36" rx="4" fill="none" stroke="#C9A84C"/><path d="M8 20l24 16 24-16" stroke="#F0D98C" fill="none"/></svg><strong>Write to Anamika Ji</strong><a href="mailto:averma.ana@gmail.com">averma.ana@gmail.com</a></article>
+          <article class="contact-card glass reveal"><svg width="42" height="42" viewBox="0 0 64 64"><rect x="14" y="14" width="36" height="36" rx="10" fill="none" stroke="#C9A84C"/><circle cx="32" cy="32" r="9" stroke="#F0D98C" fill="none"/><circle cx="44" cy="20" r="2" fill="#E8A020"/></svg><strong>Follow on Instagram</strong><a href="https://www.instagram.com/annau.7" target="_blank" rel="noopener">@annau.7</a></article>
+        </div>
+        <p class="loc">📍 Lucknow, Uttar Pradesh, India</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container foot-top">
+      <div><div class="foot-mono">AV ✦</div><h4>Anamika Verma</h4><p>Illuminate Your Destiny Through the Stars</p></div>
+      <div class="foot-links"><a href="#home">Home</a><a href="#about">About</a><a href="#services">Services</a><a href="#consult">Consult</a><a href="#contact">Contact</a></div>
+      <div class="socials"><a class="icon-btn" href="https://www.instagram.com/annau.7" target="_blank" rel="noopener" aria-label="Instagram">IG</a><a class="icon-btn" href="https://wa.me/918009592703" target="_blank" rel="noopener" aria-label="WhatsApp">WA</a></div>
+    </div>
+    <div class="foot-bar">© 2025 Anamika Verma. All Rights Reserved.</div>
+  </footer>
+
+  <div class="modal" id="successModal"><div class="modal-card glass"><svg width="74" height="74" viewBox="0 0 74 74"><circle cx="37" cy="37" r="32" stroke="#C9A84C" fill="none"/><path d="M22 39l10 10 20-20" stroke="#F0D98C" stroke-width="4" fill="none" style="stroke-dasharray:60;stroke-dashoffset:60;animation:dash 1s ease forwards;"/></svg><h3>Namaste 🙏</h3><p>Your consultation request has been received. Anamika ji will connect with you within 24 hours.</p><button class="cta-btn" id="closeModal">Close</button></div></div>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+    window.addEventListener('mousemove', e => { cursor.style.left = e.clientX+'px'; cursor.style.top = e.clientY+'px'; });
+    document.querySelectorAll('a,button,.dropzone,input,textarea').forEach(el=>{
+      el.addEventListener('mouseenter', ()=>cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', ()=>cursor.classList.remove('hover'));
+    });
+
+    const navbar = document.getElementById('navbar');
+    const links = [...document.querySelectorAll('.nav-links a')];
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
+      const y = window.scrollY;
+      document.getElementById('starfield').style.transform = `translateY(${y*0.3}px)`;
+      document.querySelector('.mandala-layer').style.transform = `translateY(${y*0.6}px)`;
+      links.forEach(a=>{ const sec=document.querySelector(a.getAttribute('href')); if(sec){ const t=sec.offsetTop-120,b=t+sec.offsetHeight; a.classList.toggle('active', y>=t&&y<b); }});
+    });
+
+    const h = document.getElementById('hamburger'), m = document.getElementById('mobileMenu');
+    h.addEventListener('click', ()=>m.classList.toggle('open'));
+    m.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>m.classList.remove('open')));
+
+    const wheel = document.getElementById('wheel');
+    const glyphs = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+    glyphs.forEach((g,i)=>{ const d=document.createElement('div'); d.className='glyph'; d.style.transform=`translate(-50%,-50%) rotateY(${i*30}deg) translateZ(160px)`; d.textContent=g; wheel.appendChild(d); });
+
+    const particles = document.getElementById('particles');
+    for(let i=0;i<26;i++){ const s=document.createElement('span'); s.style.left=Math.random()*100+'%'; s.style.animationDelay=(Math.random()*10)+'s'; s.style.animationDuration=(8+Math.random()*8)+'s'; particles.appendChild(s); }
+
+    const revealEls = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver(entries=>{ entries.forEach(entry=>{ if(entry.isIntersecting){ entry.target.classList.add('visible'); [...entry.target.children].forEach((c,i)=>c.style.transitionDelay=`${i*0.1}s`); }}); }, {threshold:.18});
+    revealEls.forEach(el=>io.observe(el));
+
+    const stats = document.querySelectorAll('.stat h3');
+    const statIO = new IntersectionObserver(entries=>{ entries.forEach(e=>{ if(e.isIntersecting){ const el=e.target; const t=+el.dataset.target; const start=performance.now(); const d=2000; const tick=(n)=>{ const p=Math.min((n-start)/d,1); el.textContent=Math.floor(t*p)+(t>=10?'+':''); if(p<1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); statIO.unobserve(el); }}); }, {threshold:.7});
+    stats.forEach(s=>statIO.observe(s));
+
+    const form = document.getElementById('consultForm');
+    const ids = ['name','phone','email','dob','address','profession','guidance'];
+    const validators = {
+      name:v=>v.trim()? '':'Please enter your name.',
+      phone:v=>(v.replace(/\D/g,'').length===10)?'':'Enter a valid 10-digit number.',
+      email:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)?'':'Enter a valid email address.',
+      dob:v=>{ if(!v) return 'Please enter date of birth.'; return new Date(v)>new Date()?'DOB cannot be in the future.':'';},
+      address:v=>v.trim()?'':'Address is required.',
+      profession:v=>v.trim()?'':'Profession is required.',
+      guidance:v=>v.trim().length>=20?'':'Please describe at least 20 characters.'
+    };
+    const endpoint = form.getAttribute('action');
+    function setErr(id,msg){ const f=document.getElementById(id).closest('.field'); f.classList.toggle('invalid',!!msg); f.querySelector('.error-msg').textContent=msg||''; }
+    form.addEventListener('submit',e=>{
+      e.preventDefault();
+      let first=null, ok=true;
+      ids.forEach(id=>{ const msg=validators[id](document.getElementById(id).value); setErr(id,msg); if(msg && !first) first=document.getElementById(id); ok=ok&&!msg; });
+      if(!ok){ first.scrollIntoView({behavior:'smooth',block:'center'}); first.focus(); return; }
+      const btn=document.getElementById('submitBtn');
+      btn.disabled=true; btn.innerHTML='<span class="spinner"></span>Sending...';
+      const fd = new FormData(form);
+      const file = fi.files[0];
+      if(file && file.size > 10 * 1024 * 1024){
+        setErr('guidance','');
+        alert('Uploaded file exceeds 10MB limit.');
+        btn.disabled=false; btn.textContent='✦ Send My Request ✦';
+        return;
+      }
+      fetch(endpoint, { method:'POST', body: fd, headers: { 'Accept':'application/json' }})
+        .then(async r => {
+          if(!r.ok) throw new Error('Submission failed');
+          document.getElementById('successModal').classList.add('open');
+        })
+        .catch(() => {
+          alert('Unable to send right now. Please try again or call +91 8009592703.');
+        })
+        .finally(() => {
+          btn.disabled=false;
+          btn.textContent='✦ Send My Request ✦';
+        });
+    });
+    document.getElementById('closeModal').addEventListener('click',()=>{ document.getElementById('successModal').classList.remove('open'); form.reset(); form.querySelectorAll('.error-msg').forEach(e=>e.textContent=''); form.querySelectorAll('.invalid').forEach(e=>e.classList.remove('invalid')); document.getElementById('fileInfo').textContent=''; fi.value=''; });
+
+    const dz = document.getElementById('dropzone'); const fi = document.getElementById('fileInput'); const fileInfo=document.getElementById('fileInfo');
+    dz.addEventListener('click',()=>fi.click()); ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag');})); ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag');}));
+    dz.addEventListener('drop',e=>{ const f=e.dataTransfer.files[0]; if(f) showFile(f); }); fi.addEventListener('change',()=>{ if(fi.files[0]) showFile(fi.files[0]); });
+    function showFile(f){ fileInfo.innerHTML=`✔ ${f.name}`; }
+
+    const sCanvas = document.getElementById('starfield'), sctx = sCanvas.getContext('2d');
+    let stars=[], run=true;
+    function rs(){ sCanvas.width=innerWidth; sCanvas.height=innerHeight; stars=Array.from({length:220},()=>({x:Math.random()*sCanvas.width,y:Math.random()*sCanvas.height,r:Math.random()*1.6+.3,o:Math.random(),v:Math.random()*.02+.005,g:Math.random()>.7})); }
+    rs(); addEventListener('resize',rs);
+    function drawStars(){ if(!run) return; sctx.clearRect(0,0,sCanvas.width,sCanvas.height); stars.forEach(s=>{ s.o+=s.v*(Math.random()>.5?1:-1); if(s.o<.15||s.o>.95)s.v*=-1; sctx.beginPath(); sctx.globalAlpha=s.o; sctx.fillStyle=s.g?'#C9A84C':'#fff'; sctx.arc(s.x,s.y,s.r,0,Math.PI*2); sctx.fill(); }); requestAnimationFrame(drawStars); }
+    drawStars();
+
+    const c2 = document.getElementById('servicesCanvas'), c2x = c2.getContext('2d'); let points=[], lines=[];
+    function resize2(){ const r=c2.parentElement.getBoundingClientRect(); c2.width=r.width; c2.height=r.height; points=Array.from({length:60},()=>({x:Math.random()*c2.width,y:Math.random()*c2.height})); }
+    resize2(); addEventListener('resize',resize2);
+    document.getElementById('services').addEventListener('mousemove',e=>{ const rect=c2.getBoundingClientRect(); const mx=e.clientX-rect.left,my=e.clientY-rect.top; points.forEach(p=>{ const d=Math.hypot(mx-p.x,my-p.y); if(d<140) lines.push({x1:mx,y1:my,x2:p.x,y2:p.y,a:.55,t:performance.now()}); }); });
+    function anim2(){ c2x.clearRect(0,0,c2.width,c2.height); const now=performance.now(); lines=lines.filter(l=>now-l.t<1500); lines.forEach(l=>{ const age=(now-l.t)/1500; c2x.globalAlpha=l.a*(1-age); c2x.strokeStyle='#C9A84C'; c2x.beginPath(); c2x.moveTo(l.x1,l.y1); c2x.lineTo(l.x2,l.y2); c2x.stroke(); }); requestAnimationFrame(anim2); }
+    anim2();
+
+    document.addEventListener('visibilitychange', ()=>{ run = document.visibilityState !== 'hidden'; if(run) drawStars(); });
+  </script>
+</body>
+</html>
